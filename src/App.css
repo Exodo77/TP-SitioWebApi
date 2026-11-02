@@ -26,7 +26,7 @@ a { color: inherit; text-decoration: none; }
 .inicio-hero { display: flex; align-items: center; margin-bottom: 1.5rem; }
 h1 { margin-bottom: 0.4rem; color: #1f3b5b; }
 .introduccion { margin-top: 0; color: #66758a; }
-.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
 .tarjeta { overflow: hidden; border: 1px solid #d9e0e8; border-radius: 10px; background: white; box-shadow: 0 3px 12px rgb(22 43 68 / 8%); }
 .tarjeta-partido { border-radius: 12px; box-shadow: 0 2px 8px rgb(22 43 68 / 6%); transition: transform 180ms ease, box-shadow 180ms ease; }
 .tarjeta-partido:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgb(22 43 68 / 12%); }
@@ -48,12 +48,13 @@ h1 { margin-bottom: 0.4rem; color: #1f3b5b; }
 .estado-punto { width: 7px; height: 7px; border-radius: 50%; background: #8190a3; }
 .estado-en-vivo { background: #d94444; box-shadow: 0 0 0 3px rgb(217 68 68 / 12%); }
 .estado-finalizado { background: #56718f; }
-.enfrentamiento { display: grid; grid-template-columns: minmax(0, 1fr) minmax(70px, 0.65fr) minmax(0, 1fr); align-items: center; gap: 0.35rem; min-height: 126px; padding: 0.75rem 1rem 1rem; }
-.equipo-partido { display: flex; min-width: 0; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; text-align: center; font-weight: 700; }
-.equipo-partido span { display: -webkit-box; width: 100%; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.25; overflow-wrap: anywhere; }
-.equipo-partido img { width: 52px; height: 52px; object-fit: contain; }
-.equipo-local span, .equipo-visitante span { min-height: 2.5em; }
-.marcador-central { display: flex; min-width: 0; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; color: #1f3b5b; text-align: center; font-size: 1.2rem; white-space: nowrap; }
+.enfrentamiento { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 0.75rem; min-height: 104px; padding: 0.75rem 1rem 1rem; }
+.equipo-partido { display: flex; min-width: 0; flex-direction: row; align-items: center; justify-content: flex-start; gap: 0.4rem; text-align: left; font-weight: 700; }
+.equipo-partido span { display: -webkit-box; min-width: 0; flex: 1; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.25; overflow-wrap: break-word; }
+.equipo-partido img { width: 44px; height: 44px; flex: 0 0 44px; object-fit: contain; }
+.equipo-local span, .equipo-visitante span { min-height: 0; }
+.equipo-visitante { justify-content: flex-end; text-align: right; }
+.marcador-central { display: flex; min-width: 4.5rem; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; color: #1f3b5b; text-align: center; font-size: 1.05rem; white-space: nowrap; }
 .marcador-central span { padding: 0 0.12rem; color: #8592a3; }
 .marcador-central small { color: #d94444; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; }
 .hora-partido { font-size: 1.35rem; }
@@ -83,9 +84,10 @@ h1 { margin-bottom: 0.4rem; color: #1f3b5b; }
   .mapa { min-height: 300px; }
 }
 @media (max-width: 380px) {
-  .enfrentamiento { grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr); gap: 0.2rem; padding-right: 0.65rem; padding-left: 0.65rem; }
+  .tarjetas { grid-template-columns: 1fr; }
+  .enfrentamiento { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.3rem; padding-right: 0.65rem; padding-left: 0.65rem; }
   .equipo-partido { font-size: 0.88rem; }
-  .equipo-partido img { width: 44px; height: 44px; }
+  .equipo-partido img { width: 32px; height: 32px; flex-basis: 32px; }
   .marcador-central { font-size: 1rem; }
   .hora-partido { font-size: 1.15rem; }
   .dato-club { grid-template-columns: 15px 4.7rem minmax(0, 1fr); gap: 0.35rem; }

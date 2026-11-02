@@ -9,16 +9,37 @@ function Inicio() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/arg.1/scoreboard')
-      .then((respuesta) => {
-        if (!respuesta.ok) throw new Error('No se pudieron cargar los partidos.')
-        return respuesta.json()
-      })
-      .then((datos) => {
-        if (datos.code || !Array.isArray(datos.events)) {
-          throw new Error('La respuesta de ESPN no tiene el formato esperado.')
-        }
-        setPartidos(datos.events)
+    const formatoFechaApi = (fecha) => new Intl.DateTimeFormat('en-CA', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'America/Argentina/Buenos_Aires',
+    }).format(fecha).replaceAll('-', '')
+    const fechas = Array.from({ length: 8 }, (_, dia) => {
+      const fecha = new Date()
+      fecha.setDate(fecha.getDate() + dia)
+      return formatoFechaApi(fecha)
+    })
+
+    Promise.allSettled(fechas.map(async (fecha) => {
+      const respuesta = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/arg.1/scoreboard?dates=${fecha}`)
+      if (!respuesta.ok) throw new Error('No se pudieron cargar los partidos.')
+      const datos = await respuesta.json()
+      if (datos.code || !Array.isArray(datos.events)) throw new Error('La respuesta de ESPN no tiene el formato esperado.')
+      return datos.events
+    }))
+      .then((resultados) => {
+        const resultadosCorrectos = resultados.filter((resultado) => resultado.status === 'fulfilled')
+        if (!resultadosCorrectos.length) throw new Error('No se pudieron cargar los partidos.')
+
+        const partidosUnicos = new Map()
+        resultadosCorrectos.forEach((resultado) => {
+          resultado.value.forEach((partido) => partidosUnicos.set(partido.id, partido))
+        })
+        const proximosPartidos = Array.from(partidosUnicos.values())
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .slice(0, 6)
+        setPartidos(proximosPartidos)
       })
       .catch(() => setError('Ocurrió un error al cargar los partidos.'))
       .finally(() => setCargando(false))
@@ -26,14 +47,14 @@ function Inicio() {
 
   if (cargando) return <p className="mensaje">Cargando...</p>
   if (error) return <p className="mensaje">{error}</p>
-  if (!partidos.length) return <main className="contenedor"><h1>Fútbol argentino</h1><p className="mensaje">No hay partidos programados para hoy.</p></main>
+  if (!partidos.length) return <main className="contenedor"><h1>Fútbol argentino</h1><p className="mensaje">No hay partidos programados en los próximos días.</p></main>
 
   return (
     <main className="contenedor">
       <section className="inicio-hero">
         <div>
           <h1>Fútbol argentino</h1>
-          <p className="introduccion">Partidos de la Liga Profesional argentina de hoy</p>
+          <p className="introduccion">Próximos partidos de la Liga Profesional argentina</p>
         </div>
       </section>
       <section className="tarjetas">
@@ -48,7 +69,7 @@ function Inicio() {
               ? 'FINALIZADO'
               : 'PROGRAMADO'
           const hora = partido.date
-            ? new Date(partido.date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' })
+            ? new Date(partido.date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Argentina/Buenos_Aires' })
             : '--:--'
           const fecha = partido.date
             ? new Date(partido.date).toLocaleDateString('es-AR', { dateStyle: 'medium', timeZone: 'America/Argentina/Buenos_Aires' })
