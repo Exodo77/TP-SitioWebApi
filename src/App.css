@@ -34,7 +34,7 @@ h1 { margin-bottom: 0.4rem; color: #1f3b5b; }
 .tarjeta-club:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgb(22 43 68 / 12%); }
 .imagen-partido, .imagen-club { display: block; width: 100%; height: 190px; object-fit: cover; background: #e8edf3; }
 .club-cabecera { display: flex; min-height: 132px; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 0.55rem; padding: 1rem; }
-.imagen-club { width: 76px; height: 76px; padding: 0.25rem; object-fit: contain; }
+.imagen-club { width: 76px; height: 76px; padding: 0.25rem; object-fit: contain; background: transparent; }
 .club-cabecera h2 { display: -webkit-box; max-width: 100%; min-height: 2.5em; margin: 0; overflow: hidden; color: #1f3b5b; font-size: 1.05rem; line-height: 1.25; text-align: center; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .datos-club { display: flex; flex-direction: column; gap: 0.55rem; padding: 0.85rem 1rem; border-top: 1px solid #edf0f3; background: #f8f9fa; }
 .dato-club { display: grid; grid-template-columns: 15px 5.2rem minmax(0, 1fr); align-items: center; gap: 0.45rem; min-width: 0; color: #66758a; font-size: 0.75rem; line-height: 1.35; }
