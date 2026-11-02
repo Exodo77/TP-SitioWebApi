@@ -30,8 +30,17 @@ function Inicio() {
 
   return (
     <main className="contenedor">
-      <h1>Fútbol argentino</h1>
-      <p className="introduccion">Partidos de la Liga Profesional argentina de hoy</p>
+      <section className="inicio-hero">
+        <div>
+          <h1>Fútbol argentino</h1>
+          <p className="introduccion">Partidos de la Liga Profesional argentina de hoy</p>
+        </div>
+        <img
+          className="afa-logo"
+          src="https://www.marmonsports.com/img/cms/Logos/logo-afa-2024.png"
+          alt="Escudo de la Asociación del Fútbol Argentino"
+        />
+      </section>
       <section className="tarjetas">
         {partidos.map((partido) => (
           <article className="tarjeta" key={partido.id}>
@@ -81,6 +90,30 @@ function Clubes() {
 }
 
 function Contacto() {
+  const [ubicacion, setUbicacion] = useState(null)
+  const [estadoUbicacion, setEstadoUbicacion] = useState('Elegí “Usar mi ubicación” para centrar el mapa en tu ubicación actual.')
+
+  const obtenerUbicacion = () => {
+    if (!navigator.geolocation) {
+      setEstadoUbicacion('Este navegador no permite acceder a la ubicación.')
+      return
+    }
+
+    setEstadoUbicacion('Solicitando permiso para obtener tu ubicación...')
+    navigator.geolocation.getCurrentPosition(
+      (posicion) => {
+        setUbicacion({ latitud: posicion.coords.latitude, longitud: posicion.coords.longitude })
+        setEstadoUbicacion('')
+      },
+      () => setEstadoUbicacion('No pudimos obtener tu ubicación. Revisá el permiso del navegador e intentá nuevamente.'),
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
+    )
+  }
+
+  const mapaSrc = ubicacion
+    ? `https://maps.google.com/maps?q=${ubicacion.latitud},${ubicacion.longitud}&z=15&output=embed`
+    : 'https://maps.google.com/maps?q=Buenos%20Aires%2C%20Argentina&z=12&output=embed'
+
   return (
     <main className="contenedor">
       <h1>Contacto</h1>
@@ -95,7 +128,11 @@ function Contacto() {
           <textarea id="mensaje" name="mensaje" rows="6" required />
           <button type="submit">Enviar mensaje</button>
         </form>
-        <iframe className="mapa" title="Mapa del Estadio Monumental" src="https://maps.google.com/maps?q=Estadio%20Monumental%20Buenos%20Aires&t=&z=14&ie=UTF8&iwloc=&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+        <div className="mapa-panel">
+          <iframe className="mapa" title={ubicacion ? 'Mapa de tu ubicación actual' : 'Mapa de Buenos Aires'} src={mapaSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+          <button className="boton-ubicacion" type="button" onClick={obtenerUbicacion}>{ubicacion ? 'Actualizar mi ubicación' : 'Usar mi ubicación'}</button>
+          <p className="estado-ubicacion" aria-live="polite">{estadoUbicacion}</p>
+        </div>
       </section>
     </main>
   )
@@ -105,7 +142,7 @@ export default function App() {
   return (
     <>
       <header className="encabezado">
-        <Link className="marca" to="/">Pasión Argentina</Link>
+        <Link className="marca" to="/">Partidos Argentinos</Link>
         <nav aria-label="Navegación principal">
           <Link to="/">Inicio</Link>
           <Link to="/clubes">Clubes</Link>
@@ -118,7 +155,7 @@ export default function App() {
         <Route path="/contacto" element={<Contacto />} />
         <Route path="*" element={<main className="contenedor"><h1>Página no encontrada</h1><Link to="/">Volver al inicio</Link></main>} />
       </Routes>
-      <footer className="pie"><p>Trabajo práctico · Fútbol argentino</p></footer>
+      <footer className="pie"><p>Partidos del fútbol argentino</p></footer>
     </>
   )
 }
