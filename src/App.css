@@ -1,0 +1,53 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #243247;
+  background: #f3f5f8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+a { color: inherit; text-decoration: none; }
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem max(5%, calc((100% - 1100px) / 2));
+  color: white;
+  background: #1f3b5b;
+}
+.marca { font-size: 1.2rem; font-weight: 700; }
+.encabezado nav { display: flex; gap: 1.25rem; }
+.encabezado nav a:hover { text-decoration: underline; }
+.contenedor { width: min(1100px, 90%); min-height: 70vh; margin: 2.5rem auto; }
+h1 { margin-bottom: 0.4rem; color: #1f3b5b; }
+.introduccion { margin-top: 0; color: #66758a; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+.tarjeta { overflow: hidden; border: 1px solid #d9e0e8; border-radius: 10px; background: white; box-shadow: 0 3px 12px rgb(22 43 68 / 8%); }
+.imagen-partido, .imagen-club { display: block; width: 100%; height: 190px; object-fit: cover; background: #e8edf3; }
+.imagen-club { padding: 1rem; object-fit: contain; }
+.contenido-tarjeta { padding: 1rem; }
+.contenido-tarjeta h2 { margin: 0 0 0.8rem; font-size: 1.15rem; }
+.contenido-tarjeta p { margin: 0.45rem 0; line-height: 1.45; }
+.partido-equipos { display: flex; align-items: center; justify-content: space-around; gap: 0.75rem; min-height: 112px; }
+.equipo-partido { display: flex; flex: 1; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; font-weight: 700; }
+.equipo-partido img { width: 64px; height: 64px; object-fit: contain; }
+.versus { margin: 0.75rem 0 1rem; text-align: center; font-size: 1rem; color: #66758a; }
+.mensaje { width: min(1100px, 90%); min-height: 70vh; margin: 2.5rem auto; }
+.contacto { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem; }
+.formulario { display: flex; flex-direction: column; gap: 0.6rem; padding: 1.25rem; border-radius: 10px; background: white; box-shadow: 0 3px 12px rgb(22 43 68 / 8%); }
+.formulario label { margin-top: 0.4rem; font-weight: 600; }
+.formulario input, .formulario textarea { width: 100%; padding: 0.75rem; border: 1px solid #c7d0dc; border-radius: 6px; font: inherit; }
+.formulario input:focus, .formulario textarea:focus { outline: 2px solid #4a83bd; }
+.formulario button { margin-top: 0.6rem; padding: 0.8rem; border: 0; border-radius: 6px; color: white; background: #336fa8; font: inherit; font-weight: 700; cursor: pointer; }
+.formulario button:hover { background: #285b8d; }
+.mapa { width: 100%; min-height: 380px; border: 0; border-radius: 10px; }
+.pie { padding: 1rem; color: white; text-align: center; background: #1f3b5b; }
+@media (max-width: 650px) {
+  .encabezado { align-items: flex-start; flex-direction: column; }
+  .encabezado nav { flex-wrap: wrap; }
+  .contacto { grid-template-columns: 1fr; }
+  .mapa { min-height: 300px; }
+}
