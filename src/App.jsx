@@ -35,34 +35,55 @@ function Inicio() {
           <h1>Fútbol argentino</h1>
           <p className="introduccion">Partidos de la Liga Profesional argentina de hoy</p>
         </div>
-        <img
-          className="afa-logo"
-          src="https://www.marmonsports.com/img/cms/Logos/logo-afa-2024.png"
-          alt="Escudo de la Asociación del Fútbol Argentino"
-        />
       </section>
       <section className="tarjetas">
-        {partidos.map((partido) => (
-          <article className="tarjeta" key={partido.id}>
-            <div className="contenido-tarjeta">
-              <div className="partido-equipos">
-                {partido.competitions?.[0]?.competitors
-                  ?.slice()
-                  .sort((a, b) => (a.homeAway === 'home' ? -1 : 1) - (b.homeAway === 'home' ? -1 : 1))
-                  .map((competidor) => (
-                    <div className="equipo-partido" key={competidor.id}>
-                      {competidor.team.logo && <img src={competidor.team.logo} alt={`Escudo de ${competidor.team.displayName}`} />}
-                      <span>{competidor.team.displayName}</span>
-                    </div>
-                  ))}
+        {partidos.map((partido) => {
+          const competidores = partido.competitions?.[0]?.competitors || []
+          const local = competidores.find((equipo) => equipo.homeAway === 'home')
+          const visitante = competidores.find((equipo) => equipo.homeAway === 'away')
+          const tipoEstado = partido.status?.type
+          const estado = tipoEstado?.state === 'in'
+            ? 'EN VIVO'
+            : tipoEstado?.completed
+              ? 'FINALIZADO'
+              : 'PROGRAMADO'
+          const hora = partido.date
+            ? new Date(partido.date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' })
+            : '--:--'
+          const fecha = partido.date
+            ? new Date(partido.date).toLocaleDateString('es-AR', { dateStyle: 'medium', timeZone: 'America/Argentina/Buenos_Aires' })
+            : 'Fecha no disponible'
+
+          return (
+            <article className="tarjeta tarjeta-partido" key={partido.id}>
+              <div className="estado-partido"><span className={`estado-punto estado-${estado.toLowerCase().replace(' ', '-')}`} />{estado}</div>
+              <div className="enfrentamiento">
+                <div className="equipo-partido equipo-local" title={local?.team.displayName}>
+                  {local?.team.logo && <img src={local.team.logo} alt={`Escudo de ${local.team.displayName}`} />}
+                  <span>{local?.team.displayName || 'Local'}</span>
+                </div>
+                <div className="marcador-central" aria-label={estado === 'PROGRAMADO' ? `Comienza a las ${hora}` : 'Resultado del partido'}>
+                  {estado === 'PROGRAMADO' ? <strong className="hora-partido">{hora}</strong> : <strong>{local?.score ?? '0'} <span>—</span> {visitante?.score ?? '0'}</strong>}
+                  {estado === 'EN VIVO' && <small>EN JUEGO</small>}
+                </div>
+                <div className="equipo-partido equipo-visitante" title={visitante?.team.displayName}>
+                  <span>{visitante?.team.displayName || 'Visitante'}</span>
+                  {visitante?.team.logo && <img src={visitante.team.logo} alt={`Escudo de ${visitante.team.displayName}`} />}
+                </div>
               </div>
-              <h2 className="versus">{partido.status?.type?.shortDetail || 'Partido'}</h2>
-              <p><strong>Resultado:</strong> {partido.competitions?.[0]?.competitors?.find((equipo) => equipo.homeAway === 'home')?.score ?? '-'} - {partido.competitions?.[0]?.competitors?.find((equipo) => equipo.homeAway === 'away')?.score ?? '-'}</p>
-              <p><strong>Fecha:</strong> {partido.date ? new Date(partido.date).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Argentina/Buenos_Aires' }) : 'No disponible'}</p>
-              <p><strong>Estadio:</strong> {partido.competitions?.[0]?.venue?.fullName || 'No disponible'}</p>
-            </div>
-          </article>
-        ))}
+              <footer className="pie-tarjeta-partido">
+                <span className="dato-partido">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2M14 14h2M8 17h2"/></svg>
+                  {fecha} · {hora}
+                </span>
+                <span className="dato-partido dato-estadio">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                  {partido.competitions?.[0]?.venue?.fullName || 'Estadio no disponible'}
+                </span>
+              </footer>
+            </article>
+          )
+        })}
       </section>
     </main>
   )
@@ -75,12 +96,22 @@ function Clubes() {
       <p className="introduccion">Conocé algunos clubes de nuestro fútbol.</p>
       <section className="tarjetas">
         {clubes.map((club) => (
-          <article className="tarjeta" key={club.id}>
-            <img className="imagen-club" src={club.imagen} alt={`Escudo de ${club.nombre}`} />
-            <div className="contenido-tarjeta">
-              <h2>{club.nombre}</h2>
-              <p><strong>Estadio:</strong> {club.estadio}</p>
-              <p><strong>Fundación:</strong> {club.fundacion}</p>
+          <article className="tarjeta tarjeta-club" key={club.id}>
+            <div className="club-cabecera">
+              <img className="imagen-club" src={club.imagen} alt={`Escudo de ${club.nombre}`} />
+              <h2 title={club.nombre}>{club.nombre}</h2>
+            </div>
+            <div className="datos-club">
+              <span className="dato-club">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 9h.01M15 9h.01M9 12h.01M15 12h.01"/></svg>
+                <span className="etiqueta-club">Estadio</span>
+                <span className="valor-club" title={club.estadio}>{club.estadio}</span>
+              </span>
+              <span className="dato-club">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2M14 14h2"/></svg>
+                <span className="etiqueta-club">Fundación</span>
+                <span className="valor-club">{club.fundacion}</span>
+              </span>
             </div>
           </article>
         ))}
@@ -143,6 +174,7 @@ export default function App() {
     <>
       <header className="encabezado">
         <Link className="marca" to="/">Partidos Argentinos</Link>
+        <img className="logo-cabecera" src="https://www.marmonsports.com/img/cms/Logos/logo-afa-2024.png" alt="Escudo de la AFA" />
         <nav aria-label="Navegación principal">
           <Link to="/">Inicio</Link>
           <Link to="/clubes">Clubes</Link>
